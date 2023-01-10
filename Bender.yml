@@ -1,0 +1,14 @@
+package:
+  name: culsans-synth-wrap
+  authors:
+    - "Luca Valente"
+
+
+dependencies:
+  cva6: { path: "modules/cva6" }
+
+export_include_dirs:
+  - include/
+
+sources:
+  - rtl/src/culsans_synth_wrap.sv

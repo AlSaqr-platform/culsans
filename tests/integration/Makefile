@@ -97,6 +97,7 @@ AXI_SRC := src/axi_cut.sv                                                 \
 	          src/snoop_intf.sv \
 	          src/axi_xbar.sv \
 	          src/ace_trs_dec.sv \
+	          src/ccu_fsm.sv \
 	          src/ace_ccu_top.sv
 AXI_SRC := $(addprefix $(AXI_DIR)/, $(AXI_SRC))
 
@@ -222,10 +223,10 @@ VERILATOR_CMD := $(VERILATOR)                                                   
                     -Wno-style                                                                                   \
                     --trace                                                                     \
                     -LDFLAGS "-L$(RISCV)/lib -L$(SPIKE_ROOT)/lib -Wl,-rpath,$(RISCV)/lib -Wl,-rpath,$(SPIKE_ROOT)/lib -lfesvr -lpthread" \
-                    -CFLAGS "-I$(RISCV)/include -I$(SPIKE_ROOT) -I$(SPIKE_ROOT)/include -std=c++11 -I$(SPIKE_ROOT)/include -I$(CVA6_DIR)/corev_apu/tb/dpi -O3 -DVL_DEBUG"       \
+                    -CFLAGS "-I$(RISCV)/include -I$(SPIKE_ROOT) -I$(SPIKE_ROOT)/include -std=c++17 -I$(SPIKE_ROOT)/include -I$(CVA6_DIR)/corev_apu/tb/dpi -O3 -DVL_DEBUG"       \
                     -Wall --cc  --vpi                                                                            \
                     $(RTL_INCDIR) --top-module culsans_top                                         \
-					--threads-dpi none 																			 \
+				            --threads-dpi none 																			 \
                     --Mdir $(VERILATOR_LIB) -O3                                                                    \
                     --exe ./tb/culsans_tb.cpp 
 #                    $(CVA6_DIR)/corev_apu/tb/dpi/SimDTM.cc $(CVA6_DIR)/corev_apu/tb/dpi/SimJTAG.cc \

@@ -27,9 +27,6 @@ K := $(foreach exec,$(EXECUTABLES),\
         $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH")))
 
 GCC_VERSION := $(shell gcc -dumpversion)
-ifneq ($(GCC_VERSION), 8)
-$(error "Wrong gcc version - try "scl enable devtoolset-8 bash")
-endif
 
 # Common variables
 SPIKE_ROOT ?= /opt/riscv-isa-sim
