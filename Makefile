@@ -1,5 +1,5 @@
 GIT ?= git
-BENDER ?= ./bender
+BENDER ?= bender
 VSIM ?= vsim
 
 all: sim_all synth_all
@@ -24,7 +24,7 @@ endef
 
 define generate_analyze
 	echo 'set ROOT [file normalize [file dirname [info script]]/../../..]' > $1
-	./bender script synopsys $2 | grep -v "set ROOT" >> $1
+	bender script synopsys $2 | grep -v "set ROOT" >> $1
 	echo >> $1
 endef
 
@@ -37,7 +37,5 @@ sim_clean:
 tests/compile.tcl: Bender.yml
 	$(call generate_vsim, $@, -t rtl -t test,..)
 
-synth_gf22: gf22/synopsys/scripts/analyze.tcl
-
-tests/analyze.tcl: Bender.yml |
+gf22/synopsys/scripts/culsans_analyze.tcl: Bender.yml |
 	$(call generate_analyze, $@, -t rtl -t default -t asic -t gf22,..)

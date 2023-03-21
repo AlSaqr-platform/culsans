@@ -22,7 +22,7 @@ package culsans_pkg;
   localparam NrSlaves = 2; // actually masters, but slaves on the crossbar
 
   // 4 is recommended by AXI standard, so lets stick to it, do not change
-  localparam IdWidth = 4;
+  localparam IdWidth = 5;
   localparam IdWidthToXbar = IdWidth + $clog2(NB_CORES) + $clog2(NB_CORES+1);
   localparam IdWidthSlave = IdWidthToXbar + $clog2(NrSlaves);
 
@@ -88,9 +88,9 @@ package culsans_pkg;
     CachedRegionAddrBase:  {DRAMBase},
     CachedRegionLength:    {DRAMLength},
     // shared region
-    NrSharedRegionRules:    0,
+    NrSharedRegionRules:    1,
     SharedRegionAddrBase:  {64'h8000_0000},
-    SharedRegionLength:    {64'h40000000},
+    SharedRegionLength:    {64'h4000_0000},
     //  cache config
     Axi64BitCompliant:      1'b1,
     SwapEndianess:          1'b0,
