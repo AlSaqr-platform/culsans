@@ -13,8 +13,3 @@ export_include_dirs:
 sources:
   - rtl/include/culsans_pkg.sv
   - rtl/src/culsans_synth_wrap.sv
-  - target: all(asic, not(all(fpga, xilinx)))
-    files:
-      - gf22/macro_wrap/memwrap_gf22.sv
-      - gf22/macro_wrap/tc_sram_gf22.sv
-      - gf22/macro_wrap/tc_clk_gf22.sv
