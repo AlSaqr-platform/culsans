@@ -38,7 +38,8 @@ module culsans_synth_wrap
   localparam ASYNC_W_DATA_WIDTH  = (2**LOG_DEPTH)*W_WIDTH,
   localparam ASYNC_B_DATA_WIDTH  = (2**LOG_DEPTH)*B_WIDTH,
   localparam ASYNC_AR_DATA_WIDTH = (2**LOG_DEPTH)*AR_WIDTH,
-  localparam ASYNC_R_DATA_WIDTH  = (2**LOG_DEPTH)*R_WIDTH
+  localparam ASYNC_R_DATA_WIDTH  = (2**LOG_DEPTH)*R_WIDTH,
+  parameter ariane_pkg::ariane_cfg_t ArianeCfg     = culsans_pkg::ArianeSocCfg 
 )  (
   input  logic                                   clk_i,
   input  logic                                   rst_ni,
@@ -165,7 +166,7 @@ module culsans_synth_wrap
     assign hart_id[i] = i;
 
     ariane #(
-      .ArianeCfg  ( culsans_pkg::ArianeSocCfg ),
+      .ArianeCfg  ( ArianeCfg                 ),
       .mst_req_t  ( ariane_ace::m2s_t         ),
       .mst_resp_t ( ariane_ace::s2m_t         )
     ) i_ariane (
