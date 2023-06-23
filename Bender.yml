@@ -5,7 +5,7 @@ package:
 
 
 dependencies:
-  cva6_culsans: { git: git@github.com:AlSaqr-platform/cva6.git, rev: "831f304097ca38244cdfd6d79c2e927509794a51" }
+  cva6_culsans: { git: git@github.com:AlSaqr-platform/cva6.git, rev: "ed5f0a40032bb33a64a91be01d3749c73e37c56d" } # branch: dual_core_conf
 
 export_include_dirs:
   - include/
