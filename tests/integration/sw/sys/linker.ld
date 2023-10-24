@@ -33,8 +33,8 @@ SECTIONS
 {
   /* set the base address at the beginnning of the RAM */
   . = 0x1C000000;
-
-  .tohost : { *(.tohost) }
+  
+  .tohost : AT(0x1C000000) { *(.tohost) }
 
   . = 0x80000000;
 
