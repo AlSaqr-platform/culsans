@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 import csv
 import os
 from prettytable import PrettyTable
@@ -32,7 +34,7 @@ fields = [
 ]
 
 # Directory containing the test directories
-base_directory = "auto"
+base_directory = "testlist"
 
 # Function to parse a single line as CSV
 def parse_line_as_csv(line):
