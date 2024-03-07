@@ -4,7 +4,7 @@ include ../../../rtl.mk
 
 SYS_DIR = ../../sw/sys
 LIB_DIR = ../../libs
-INC_DIR = ../../sw/include
+INC_DIR = ../../sw/include ../../inc
 INCLUDES = $(foreach d, $(INC_DIR), -I$d)
 INCLUDES += $(foreach d, $(SYS_DIR), -I$d)
 

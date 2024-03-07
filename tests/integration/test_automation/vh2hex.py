@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 
 import os.path
 import getopt
@@ -45,7 +45,7 @@ def isValidAddr(addr, baseAddr, endAddr):
 
 def writeWord(fd, word, wordLength):
     if wordLength == 8:
-        fd.write(format(word, '016x')+'\n')     
+        fd.write(format(word, '016x')+'\n')
     else:
         fd.write(format(word, '08x')+'\n')
 
