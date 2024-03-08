@@ -17,22 +17,23 @@ static void reset_counters() {
     write_csr(mhpmevent6 ,PERF_STORE);                 // store event
     write_csr(mhpmevent7 ,PERF_IF_EMPTY);              // if empty
     write_csr(mhpmevent8 ,PERF_PIPELINE_STALL);        // stall
-    write_csr(mhpmevent9 ,PERF_SNOOP_READ_ONCE);       // snoop read once
-    write_csr(mhpmevent10,PERF_SNOOP_READ_SHRD);       // snoop read shared
-    write_csr(mhpmevent11,PERF_SNOOP_READ_CLEAN);      // snoop read clean
-    write_csr(mhpmevent12,PERF_SNOOP_READ_NO_SD);      // snoop read no shared
-    write_csr(mhpmevent13,PERF_SNOOP_READ_UNIQ);       // snoop read unique
-    write_csr(mhpmevent14,PERF_SNOOP_CLEAN_SHRD);      // snoop clean shared
-    write_csr(mhpmevent15,PERF_SNOOP_CLEAN_INVLD);     // snoop clean invalid
-    write_csr(mhpmevent16,PERF_SNOOP_CLEAN_UNIQ);      // snoop clean unique
-    write_csr(mhpmevent17,PERF_SNOOP_MAKE_INVLD);      // snoop make invalid
-    write_csr(mhpmevent18,PERF_DC_HIT);                // dc hit
-    write_csr(mhpmevent19,PERF_DC_WRITE_HIT_UNIQUE);   // dc write hit unique
-    write_csr(mhpmevent20,PERF_DC_WRITE_HIT_SHARED);   // dc write hit shared
-    write_csr(mhpmevent21,PERF_DC_WRITE_MISS);         // dc write miss
-    write_csr(mhpmevent22,PERF_DC_CLEAN_INVALID_HIT);  // dc clean invalid hit
-    write_csr(mhpmevent23,PERF_DC_CLEAN_INVALID_MISS); // dc clean invalid miss
-    write_csr(mhpmevent24,PERF_DC_FLUSHING);           // dc flushing
+    write_csr(mhpmevent9 ,PERF_SNOOP_READ_ONCE);       // received snoop read once
+    write_csr(mhpmevent10,PERF_SNOOP_READ_SHRD);       // received snoop read shared
+    write_csr(mhpmevent11,PERF_SNOOP_READ_CLEAN);      // received snoop read clean
+    write_csr(mhpmevent12,PERF_SNOOP_READ_NO_SD);      // received snoop read no shared
+    write_csr(mhpmevent13,PERF_SNOOP_READ_UNIQ);       // received snoop read unique
+    write_csr(mhpmevent14,PERF_SNOOP_CLEAN_SHRD);      // received snoop clean shared
+    write_csr(mhpmevent15,PERF_SNOOP_CLEAN_INVLD);     // received snoop clean invalid
+    write_csr(mhpmevent16,PERF_SNOOP_CLEAN_UNIQ);      // received snoop clean unique
+    write_csr(mhpmevent17,PERF_SNOOP_MAKE_INVLD);      // received snoop make invalid
+    write_csr(mhpmevent18,PERF_OUT_SNOOP_READ_ONCE);   // issued snoop read once
+    write_csr(mhpmevent19,PERF_OUT_SNOOP_READ_SHARED); // issued snoop read shared
+    write_csr(mhpmevent20,PERF_OUT_SNOOP_READ_UNIQUE); // issued snoop read unique
+    write_csr(mhpmevent21,PERF_OUT_SNOOP_READ_NSNOOP); // issued snoop read no snoop
+    write_csr(mhpmevent22,PERF_OUT_SNOOP_CLEAN_UNIQ);// issued snoop clean unique
+    write_csr(mhpmevent23,PERF_OUT_SNOOP_WR_UNIQUE);   // issued snoop write unique
+    write_csr(mhpmevent24,PERF_OUT_SNOOP_WR_NOSNOOP);  // issued snoop write no snoop
+    write_csr(mhpmevent25,PERF_OUT_SNOOP_WRITE_BACK);  // issued snoop write back
 
     // Reset counters
     write_csr(mhpmcounter3,  0);
@@ -57,6 +58,7 @@ static void reset_counters() {
     write_csr(mhpmcounter22, 0);
     write_csr(mhpmcounter23, 0);
     write_csr(mhpmcounter24, 0);
+    write_csr(mhpmcounter25, 0);
 }
 
 static void start_counters() {
@@ -94,7 +96,8 @@ void print_counters(int32_t cid, uint64_t cycles, uint64_t instr) {
     put_uint32(read_csr(mhpmcounter21)); put_string(", ");
     put_uint32(read_csr(mhpmcounter22)); put_string(", ");
     put_uint32(read_csr(mhpmcounter23)); put_string(", ");
-    put_uint32(read_csr(mhpmcounter24)); put_string("\n");
+    put_uint32(read_csr(mhpmcounter24)); put_string(", ");
+    put_uint32(read_csr(mhpmcounter25)); put_string("\n");
 
 }
 
