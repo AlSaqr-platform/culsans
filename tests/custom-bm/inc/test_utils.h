@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "cache.h"
+#include "perf_events.h"
 #include "io.h"
 #include "encoding.h"
 
