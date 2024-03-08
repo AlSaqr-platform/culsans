@@ -193,7 +193,7 @@ void probe_read(int cid, int nc, int selected_core, cacheline_t* d) {
 void evict_write(int cid, int nc, int selected_core, cacheline_t* d) {
     if (cid == selected_core) {
         volatile uint64_t *ptr = (uint64_t*) d;
-        for (int i = 0; i < CACHE_WAYS * CACHE_ENTRIES; i += 2)
+        for (int i = 0; i < (2 * CACHE_WAYS * CACHE_ENTRIES); i += 2)
             ptr[i] = i;
     }
     barrier_wait(nc);
@@ -202,7 +202,7 @@ void evict_write(int cid, int nc, int selected_core, cacheline_t* d) {
 void evict_read(int cid, int nc, int selected_core, cacheline_t* d) {
     if (cid == selected_core) {
         volatile uint64_t *ptr = (uint64_t*) d;
-        for (int i = 0; i < CACHE_WAYS * CACHE_ENTRIES; i += 2)
+        for (int i = 0; i < (2 * CACHE_WAYS * CACHE_ENTRIES); i += 2)
             ptr[i];
     }
     barrier_wait(nc);
