@@ -7,7 +7,7 @@
 #define CACHE_SIZE_BYTE 16384
 
 // cachelines are 128bit long
-// cache is 32kB: 16B cachelines x 256 entries x 8 ways
+// cache is 16kB: 16B cachelines x 256 entries x 4 ways
 #define cacheline_t __uint128_t
 
 #endif

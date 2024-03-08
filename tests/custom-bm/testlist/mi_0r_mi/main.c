@@ -3,8 +3,8 @@
 
 extern void exit(int);
 
-volatile uint8_t data  [CACHE_WAYS * CACHE_ENTRIES] __attribute__((section(".cache_share_region")));
-volatile uint8_t dummy [CACHE_WAYS * CACHE_ENTRIES] __attribute__((section(".cache_share_region")));
+volatile uint8_t data  [CACHE_WAYS * CACHE_ENTRIES * sizeof(cacheline_t)] __attribute__((section(".cache_share_region")));
+volatile uint8_t dummy [CACHE_WAYS * CACHE_ENTRIES * sizeof(cacheline_t)] __attribute__((section(".cache_share_region")));
 
 void thread_entry(int cid, int nc)
 {
