@@ -30,7 +30,7 @@ static void reset_counters() {
     write_csr(mhpmevent19,PERF_OUT_SNOOP_READ_SHARED); // issued snoop read shared
     write_csr(mhpmevent20,PERF_OUT_SNOOP_READ_UNIQUE); // issued snoop read unique
     write_csr(mhpmevent21,PERF_OUT_SNOOP_READ_NSNOOP); // issued snoop read no snoop
-    write_csr(mhpmevent22,PERF_OUT_SNOOP_CLEAN_UNIQUE);// issued snoop clean unique
+    write_csr(mhpmevent22,PERF_OUT_SNOOP_CLEAN_UNIQ);// issued snoop clean unique
     write_csr(mhpmevent23,PERF_OUT_SNOOP_WR_UNIQUE);   // issued snoop write unique
     write_csr(mhpmevent24,PERF_OUT_SNOOP_WR_NOSNOOP);  // issued snoop write no snoop
     write_csr(mhpmevent25,PERF_OUT_SNOOP_WRITE_BACK);  // issued snoop write back
