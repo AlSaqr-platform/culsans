@@ -50,6 +50,8 @@ def parse_transcript_file(filepath, testname, cid):
                 return parsed_line
     return None
 
+tables = []
+
 # Create CSV file
 for cid in range(2):
     with open(f'profile{cid}.csv', mode='w', newline='') as csv_file:
@@ -74,5 +76,9 @@ for cid in range(2):
         next(reader)
         for row in reader:
             table.add_row(row)
-    print(f"## CORE {cid} ##")
-    print(table)
+    tables.append(table)
+
+with open (f'tabulated_results.txt', mode='w') as tabulated_file:
+    for cid, table in enumerate(tables):
+        print(f"## CORE {cid} ##", file=tabulated_file)
+        print(table, file=tabulated_file)
