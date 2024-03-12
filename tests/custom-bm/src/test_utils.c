@@ -101,7 +101,7 @@ void print_counters(int32_t cid, uint64_t cycles, uint64_t instr) {
 
 }
 
-void profile(operation_t op, int cid, int nc, int selected_core, cacheline_t *data) {
+void profile(task_t task_selected, task_t task_other, int cid, int nc, int selected_core) {
 
     barrier_wait(nc);
 
@@ -111,7 +111,9 @@ void profile(operation_t op, int cid, int nc, int selected_core, cacheline_t *da
     uint64_t instr_begin = rdinstret();
 
     if (cid == selected_core) {
-        op(data);
+        task_selected.op(task_selected.data);
+    } else {
+        task_other.op(task_other.data);
     }
 
     barrier_wait(nc);
@@ -133,7 +135,7 @@ void profile(operation_t op, int cid, int nc, int selected_core, cacheline_t *da
 ////////////////
 
 // Assuming these are globally accessible
- __attribute__((section(".nocache_share_region"))) volatile long barrier_counter = 0;
+ __attribute__((section(".nocache_noshare_region"))) volatile long barrier_counter = 0;
 
 void barrier_wait(long num_cores) {
     // Atomically increment the global barrier counter and fetch the previous value
@@ -176,35 +178,6 @@ void read(int cid, int nc, int selected_core, cacheline_t* d) {
     barrier_wait(nc);
 }
 
-void probe_write(int cid, int nc, int selected_core, cacheline_t* d) {
-    if (cid == (1-selected_core)) {
-        unrolled_write(d);
-    }
-    barrier_wait(nc);
+void nop(volatile cacheline_t* d) {
+    __asm__ volatile ("nop");
 }
-
-void probe_read(int cid, int nc, int selected_core, cacheline_t* d) {
-    if (cid == (1-selected_core)) {
-        unrolled_read(d);
-    }
-    barrier_wait(nc);
-}
-
-void evict_write(int cid, int nc, int selected_core, cacheline_t* d) {
-    if (cid == selected_core) {
-        volatile uint64_t *ptr = (uint64_t*) d;
-        for (int i = 0; i < (2 * CACHE_WAYS * CACHE_ENTRIES); i += 2)
-            ptr[i] = i;
-    }
-    barrier_wait(nc);
-}
-
-void evict_read(int cid, int nc, int selected_core, cacheline_t* d) {
-    if (cid == selected_core) {
-        volatile uint64_t *ptr = (uint64_t*) d;
-        for (int i = 0; i < (2 * CACHE_WAYS * CACHE_ENTRIES); i += 2)
-            ptr[i];
-    }
-    barrier_wait(nc);
-}
-

@@ -4,7 +4,7 @@ include ../common.mk
 
 include ../rtl.mk
 
-TESTS_DIR = ./testlist
+TESTS_DIR ?= ./testlist
 TESTLIST := $(dir $(wildcard $(TESTS_DIR)/*/.))
 
 # Check that SW is aligned with the NB_CORES setting

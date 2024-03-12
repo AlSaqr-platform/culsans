@@ -39,7 +39,7 @@ module culsans_tb ();
     logic [31:0] exit_val;
 
     initial begin
-        
+
         int fd;
 
         forever begin
@@ -90,6 +90,7 @@ module culsans_tb ();
         .StallRandomOutput(1'b0),
         .FixedDelayInput  (0),
         .FixedDelayOutput (0),
+        .HasLLC           (0),
         .BootAddress      (culsans_pkg::DRAMBase + 64'h10_0000)
     ) i_culsans (
         .clk_i (clk),
@@ -97,7 +98,7 @@ module culsans_tb ();
         .rst_ni(~rst),
         .exit_o (exit_val)
     );
-    
+
 
 
     // ...

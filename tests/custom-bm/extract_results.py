@@ -2,7 +2,23 @@
 
 import csv
 import os
+import argparse
 from prettytable import PrettyTable
+
+# Setup argparse to accept CLI arguments
+parser = argparse.ArgumentParser(description="Parse and tabulate test results.")
+parser.add_argument("--base-directory", dest="base_directory", type=str, default="testlist",
+                    help="Directory containing the test directories (default: 'testlist')")
+parser.add_argument("--start-cid", dest="start_cid", type=int, default=0,
+                    help="Start range of CID (default: 0)")
+parser.add_argument("--end-cid", dest="end_cid", type=int, default=1,
+                    help="End range of CID (inclusive, default: 1)")
+args = parser.parse_args()
+
+# Use the arguments from argparse
+base_directory = args.base_directory
+start_cid = args.start_cid
+end_cid = args.end_cid
 
 # Define the fields to parse
 fields = [
@@ -34,9 +50,6 @@ fields = [
     "snoop out WriteBack",
 ]
 
-# Directory containing the test directories
-base_directory = "testlist"
-
 # Function to parse a single line as CSV
 def parse_line_as_csv(line):
     return list(csv.reader([line], skipinitialspace=True))[0]
@@ -53,8 +66,8 @@ def parse_transcript_file(filepath, testname, cid):
 
 tables = []
 
-# Create CSV file
-for cid in range(2):
+# Iterate through CIDs in the specified range
+for cid in range(start_cid, end_cid + 1):
     with open(f'profile{cid}.csv', mode='w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(fields)
@@ -79,7 +92,7 @@ for cid in range(2):
             table.add_row(row)
     tables.append(table)
 
-with open (f'tabulated_results.txt', mode='w') as tabulated_file:
-    for cid, table in enumerate(tables):
+with open(f'tabulated_results.txt', mode='w') as tabulated_file:
+    for cid, table in enumerate(tables, start=start_cid):
         print(f"## CORE {cid} ##", file=tabulated_file)
         print(table, file=tabulated_file)

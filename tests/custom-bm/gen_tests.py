@@ -49,25 +49,27 @@ def translate_to_c_code(user_input):
 
         func_call = ''
         if op_type == 'r':
-            func_call = f'read, cid, nc, {selected_core}, used'
+            func = 'read'
+            data = 'used'
+            args = f'cid, nc, {selected_core}'
         elif op_type == 'w':
-            func_call = f'write, cid, nc, {selected_core}, used'
-        elif op_type == 'pw':
-            func_call = f'probe_write, cid, nc, {selected_core}, used'
-        elif op_type == 'pr':
-            func_call = f'probe_read, cid, nc, {selected_core}, used'
-        elif op_type == 'er':
-            func_call = f'evict_read, cid, nc, {selected_core}, dummy'
-        elif op_type == 'ew':
-            func_call = f'evict_write, cid, nc, {selected_core}, dummy'
+            func = 'write'
+            args = f'cid, nc, {selected_core}'
+            data = 'used'
+        elif op_type == 'dr':
+            func = 'read'
+            args = f'cid, nc, {selected_core}'
+            data = 'dummy'
+        elif op_type == 'dw':
+            func = 'write'
+            args = f'cid, nc, {selected_core}'
+            data = 'dummy'
 
-        if op_type in ['ew', 'er']:
-            c_code.append(f'    {func_call.split(", ")[0]}(cid, nc, {selected_core}, dummy);')
-        elif profile and op_type in ['r', 'w']:
-            func_call = 'unrolled_' + func_call
-            c_code.append(f'    profile({func_call});')
+        if profile and op_type in ['r', 'w']:
+            func = 'unrolled_' + func
+            c_code.append(f'    profile((task_t){{ .op = {func}, .data = {data} }}, NOP, {args});')
         else:
-            c_code.append(f'    {func_call.split(", ")[0]}(cid, nc, {selected_core}, used);')
+            c_code.append(f'    {func} ({args}, {data});')
 
     # Finalize C code
     c_code.append('}')
@@ -75,39 +77,41 @@ def translate_to_c_code(user_input):
     # Join the code lines into a single string
     return '\n'.join(c_code)
 
+rwarm = "0dr 0dr" # icache warm with reads
+wwarm = "0dw 0dw" # icache warm with writes
 testset = {
     # read_hit -> M
-    "mi_0r_mi": "0r 0r 0w p0r",
+    "mi_0r_mi": rwarm + "0w p0r",
     # read_hit -> O
-    "os_0r_os": "0r 0r 0w 1r p0r",
+    "os_0r_os": rwarm + "0w 1r p0r",
     # read_hit -> E
-    "ei_0r_ei": "0r 0r p0r",
+    "ei_0r_ei": rwarm + "0r p0r",
     # read_hit -> S S
-    "ss_0r_ss": "0r 0r 1r p0r",
+    "ss_0r_ss": rwarm + "0r 1r p0r",
     # read_hit -> S O
-    "so_0r_so": "1w 0r 0r p0r",
+    "so_0r_so": rwarm + "1w 0r p0r",
     # read_shared -> I M
-    "im_0r_so": "0r 0r 1w p0r",
+    "im_0r_so": rwarm + "1w p0r",
     # read_shared -> I O
-    "io_0r_so": "0r 0r 1w 0r 0er p0r",
+    # TODO: can it be done without evictions?
     # read_shared -> I E
-    "ie_0r_ss": "0r 0r 1w 1er 1r p0r",
+    "ie_0r_ss": rwarm + "1r p0r",
     # read_shared -> I S
-    "is_0r_ss": "0r 0r 1r 0er p0r",
+    "is_0r_ss": rwarm + "1r p0r",
     # write_hit_exclusive -> M
-    "mi_0w_mi": "0w 0w p0w",
+    "mi_0w_mi": wwarm + "0w p0w",
     # write_hit_exclusive -> E
-    "ei_0w_mi": "0w 0w 1w 1er 0r p0w",
+    "ei_0w_mi": wwarm + "0r p0w",
     # write_hit_shared -> O S
-    "os_0w_mi": "0w 0w 1r p0w",
+    "os_0w_mi": wwarm + "0w 1r p0w",
     # write_hit_shared -> S S
-    "ss_0w_mi": "0w 0w 1w 1er 1r 0r p0w",
+    "ss_0w_mi": wwarm + "1r 0r p0w",
     # write_hit_shared -> S O
-    "so_0w_mi": "0w 0w 1w 0r p0w",
+    "so_0w_mi": wwarm + "1w 0r p0w",
     # write_shared -> I M
-    "im_0w_mi": "0w 0w 1w p0w",
+    "im_0w_mi": wwarm + "1w p0w",
     # write_shared -> I E
-    "ie_0w_mi": "0w 0w 1w 1er 1r p0w",
+    "ie_0w_mi": wwarm + "1r p0w",
 }
 
 src = "template"
