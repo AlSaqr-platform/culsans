@@ -667,10 +667,10 @@ module culsans_top #(
 
   localparam ace_pkg::ccu_cfg_t CCU_CFG = '{
     NoSlvPorts: culsans_pkg::NB_CORES,
-    MaxMstTrans: 2, // Probably requires update
-    MaxSlvTrans: 2, // Probably requires update
+    MaxMstTrans: 1, // Probably requires update
+    MaxSlvTrans: 1, // Probably requires update
     FallThrough: 1'b0,
-    LatencyMode: axi_pkg::CUT_ALL_PORTS,
+    LatencyMode: axi_pkg::NO_LATENCY,
     AxiIdWidthSlvPorts: culsans_pkg::IdWidth,
     AxiIdUsedSlvPorts: culsans_pkg::IdWidth,
     UniqueIds: 1'b1,
