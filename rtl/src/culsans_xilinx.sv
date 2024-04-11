@@ -768,10 +768,10 @@ end
 
   localparam ace_pkg::ccu_cfg_t CCU_CFG = '{
     NoSlvPorts: culsans_pkg::NB_CORES,
-    MaxMstTrans: 2, // Probably requires update
-    MaxSlvTrans: 2, // Probably requires update
+    MaxMstTrans: 1, // Probably requires update
+    MaxSlvTrans: 1, // Probably requires update
     FallThrough: 1'b0,
-    LatencyMode: ace_pkg::CUT_ALL_PORTS,
+    LatencyMode: ace_pkg::NO_LATENCY,
     AxiIdWidthSlvPorts: culsans_pkg::IdWidth,
     AxiIdUsedSlvPorts: culsans_pkg::IdWidth,
     UniqueIds: 1'b1,
@@ -1946,7 +1946,7 @@ axi_clock_converter_0 pcie_axi_clock_converter (
   wire [4:0] miss_handler_0_state = gen_ariane[0].i_ariane.i_cva6.WB.i_cache_subsystem.i_nbdcache.i_miss_handler.state_q;
   wire [4:0] miss_handler_1_state = gen_ariane[1].i_ariane.i_cva6.WB.i_cache_subsystem.i_nbdcache.i_miss_handler.state_q;
 
-  wire [5:0] ccu_fsm_state = i_ccu.i_ccu_top.fsm.state_q;
+  wire [5:0] ccu_fsm_state = i_ccu.i_ccu_top.gen_ccu_fsm[0].fsm.state_q;
 
   xlnx_ila i_ila_top (
     .clk     (clk),
