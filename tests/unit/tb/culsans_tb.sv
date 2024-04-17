@@ -1447,7 +1447,7 @@ module culsans_tb
 
                             // other core writes to other part of cache line
                             dcache_drv[cid2][2].wr(.addr(addr), .rand_data(1));
-                            `WAIT_CYC(clk, 100)
+                            `WAIT_CYC(clk, 300)
 
                             // store-conditional to the target, expect failure
                             amo_drv[cid].req(.addr(addr_hi), .size(3), .op(AMO_SC), .data(data+2), .check_result(1),. exp_result(1));
@@ -1553,12 +1553,12 @@ module culsans_tb
                             dcache_drv[cid][0].rd(.do_wait(1), .addr(addr),  .check_result(1), .exp_result(data+1));
                             `WAIT_CYC(clk, 100)
 
-                            // store-conditional to the target, expect success
-                            amo_drv[cid].req(.addr(addr), .size(3), .op(AMO_SC), .data(data+2), .check_result(1),. exp_result(0));
+                            // store-conditional to the target, expect fail, since a non-conditional store has happened 
+                            amo_drv[cid].req(.addr(addr), .size(3), .op(AMO_SC), .data(data+2), .check_result(1),. exp_result(1));
                             `WAIT_CYC(clk, 100)
 
-                            // read the value in target, expect value from previous store-conditional
-                            dcache_drv[cid][0].rd(.do_wait(1), .addr(addr),  .check_result(1), .exp_result(data+2));
+                            // read the value in target, expect value from previous store (the SC did not succeed)
+                            dcache_drv[cid][0].rd(.do_wait(1), .addr(addr),  .check_result(1), .exp_result(data+1));
                             `WAIT_CYC(clk, 100)
                         end
                     end
