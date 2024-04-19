@@ -713,8 +713,8 @@ module culsans_top #(
   localparam axi_pkg::xbar_cfg_t AXI_XBAR_CFG = '{
     NoSlvPorts: culsans_pkg::NrSlaves,
     NoMstPorts: culsans_pkg::NB_PERIPHERALS,
-    MaxMstTrans: 1, // Probably requires update
-    MaxSlvTrans: 1, // Probably requires update
+    MaxMstTrans: culsans_pkg::NB_CORES, // Probably requires update
+    MaxSlvTrans: culsans_pkg::NB_CORES, // Probably requires update
     FallThrough: 1'b0,
     PipelineStages: 1,
     LatencyMode: axi_pkg::CUT_ALL_PORTS,
