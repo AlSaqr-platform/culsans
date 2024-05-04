@@ -72,6 +72,7 @@ CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/ccu_ctrl_decoder.sv
 CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/ccu_ctrl_snoop_unit.sv
 CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/ccu_ctrl_memory_unit.sv
 CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/ccu_ctrl.sv
+CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/snoop_mux.sv
 CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/ace_trs_dec.sv
 CULSANS_SRC += $(CVA6_DIR)/vendor/planv/ace/src/ace_ccu_top.sv
 CULSANS_SRC += $(CULSANS_DIR)/src/culsans_xilinx.sv
