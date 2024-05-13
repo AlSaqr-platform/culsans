@@ -718,6 +718,7 @@ end
    CCU_to_core[culsans_pkg::NB_CORES-1:0]();
 
   logic [culsans_pkg::NB_CORES-1:0][7:0] hart_id;
+  logic [culsans_pkg::NB_CORES-1:0][7:0] ccu_to_core_evt;
 
   for (genvar i = 0; i < culsans_pkg::NB_CORES; i++) begin : gen_ariane
 
@@ -742,6 +743,7 @@ end
       .irq_i                ( irq[2*i+1:2*i]      ),
       .ipi_i                ( ipi[i]              ),
       .time_irq_i           ( timer_irq[i]        ),
+      .perf_evt_i           ( ccu_to_core_evt[i]  ),
   `ifdef RVFI_PORT
       .rvfi_o               ( rvfi[i]             ),
   `endif
@@ -785,6 +787,7 @@ end
     .clk_i       ( clk        ),
     .rst_ni      ( ndmreset_n ),
     .test_i      ( test_en    ),
+    .perf_evt_o  ( ccu_to_core_evt ),
     .slv_ports   ( core_to_CCU ),
     .snoop_ports ( CCU_to_core ),
     .mst_ports   ( to_xbar[0]  )
