@@ -73,6 +73,7 @@ set_property -dict { file_type {Verilog Header} is_global_include 1} -objects $f
 update_compile_order -fileset sources_1
 
 add_files -fileset constrs_1 -norecurse constraints/ariane.xdc
+add_files -fileset constrs_1 -norecurse scripts/ddr_cdc.xdc
 
 synth_design -rtl -name rtl_1
 
