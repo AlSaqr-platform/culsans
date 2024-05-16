@@ -435,8 +435,8 @@ module culsans_top #(
     .AXI_USER_AS_ID     ( 1'b1                                    ),
     .AXI_USER_ID_LSB    ( 0                                       ),
     .AXI_USER_ID_MSB    ( $clog2(culsans_pkg::NB_CORES)-1         ),
-    .AXI_MAX_READ_TXNS  ( 1                                       ),
-    .AXI_MAX_WRITE_TXNS ( 1                                       ),
+    .AXI_MAX_READ_TXNS  ( culsans_pkg::NB_CORES * 2               ),
+    .AXI_MAX_WRITE_TXNS ( culsans_pkg::NB_CORES * 2               ),
     .RISCV_WORD_WIDTH   ( riscv::XLEN                             )
   ) i_axi_riscv_atomics (
     .clk_i,
@@ -714,8 +714,8 @@ module culsans_top #(
   localparam axi_pkg::xbar_cfg_t AXI_XBAR_CFG = '{
     NoSlvPorts: culsans_pkg::NrSlaves,
     NoMstPorts: culsans_pkg::NB_PERIPHERALS,
-    MaxMstTrans: culsans_pkg::NB_CORES, // Probably requires update
-    MaxSlvTrans: culsans_pkg::NB_CORES, // Probably requires update
+    MaxMstTrans: culsans_pkg::NB_CORES * 2, // Probably requires update
+    MaxSlvTrans: culsans_pkg::NB_CORES * 2, // Probably requires update
     FallThrough: 1'b0,
     PipelineStages: 1,
     LatencyMode: axi_pkg::CUT_ALL_PORTS,
