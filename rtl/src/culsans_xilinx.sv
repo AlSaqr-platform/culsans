@@ -1166,8 +1166,8 @@ xlnx_protocol_checker i_xlnx_protocol_checker (
 );
 `endif
 
-assign dram.r_user = '0;
-assign dram.b_user = '0;
+//assign dram.r_user = '0;
+//assign dram.b_user = '0;
 logic ddr3_aresetn;
 
 axi_cdc_intf #(
@@ -1186,7 +1186,7 @@ axi_cdc_intf #(
 );
 
 assign s_axi_awid      = dram_ddr.aw_id;
-assign s_axi_awaddr    = dram_ddr.aw_addr[29:0];
+assign s_axi_awaddr    = dram_ddr.aw_addr;
 assign s_axi_awlen     = dram_ddr.aw_len;
 assign s_axi_awsize    = dram_ddr.aw_size;
 assign s_axi_awburst   = dram_ddr.aw_burst;
@@ -1205,7 +1205,7 @@ assign s_axi_wvalid    = dram_ddr.w_valid;
 assign dram_ddr.w_ready = s_axi_wready;
 
 assign s_axi_arid      = dram_ddr.ar_id;
-assign s_axi_araddr    = dram_ddr.ar_addr[29:0];
+assign s_axi_araddr    = dram_ddr.ar_addr;
 assign s_axi_arlen     = dram_ddr.ar_len;
 assign s_axi_arsize    = dram_ddr.ar_size;
 assign s_axi_arburst   = dram_ddr.ar_burst;
@@ -1220,6 +1220,7 @@ assign dram_ddr.ar_ready = s_axi_arready;
 assign dram_ddr.b_id = s_axi_bid;
 assign dram_ddr.b_resp = s_axi_bresp;
 assign dram_ddr.b_valid = s_axi_bvalid;
+assign dram_ddr.b_user = '0;
 assign s_axi_bready = dram_ddr.b_ready;
 
 assign dram_ddr.r_id = s_axi_rid;
@@ -1227,6 +1228,7 @@ assign dram_ddr.r_data = s_axi_rdata;
 assign dram_ddr.r_resp = s_axi_rresp;
 assign dram_ddr.r_last = s_axi_rlast;
 assign dram_ddr.r_valid = s_axi_rvalid;
+assign dram_ddr.r_user = '0;
 assign s_axi_rready = dram_ddr.r_ready;
 
 xlnx_clk_gen i_xlnx_clk_gen (
@@ -1274,7 +1276,7 @@ xlnx_mig_7_ddr3 i_ddr (
     .app_zq_ack      (                ), // keep open
     .ui_clk          ( ddr_clock_out  ),
     .ui_clk_sync_rst ( ddr_sync_reset ),
-    .aresetn         ( ndmreset_n     ),
+    .aresetn         ( ddr3_aresetn   ),
     .s_axi_awid,
     .s_axi_awaddr    ( s_axi_awaddr[29:0] ),
     .s_axi_awlen,
