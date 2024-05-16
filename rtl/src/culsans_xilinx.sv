@@ -242,6 +242,8 @@ dm::dmi_resp_t debug_resp;
 
 logic dmactive;
 
+logic [culsans_pkg::NB_CORES-1:0][7:0] ccu_to_core_evt;
+
 // IRQ
 logic [culsans_pkg::NumTargets-1:0] irq;
 assign test_en    = 1'b0;
@@ -281,8 +283,8 @@ assign addr_map = '{
 localparam axi_pkg::xbar_cfg_t AXI_XBAR_CFG = '{
   NoSlvPorts:         culsans_pkg::NrSlaves,
   NoMstPorts:         culsans_pkg::NB_PERIPHERALS,
-  MaxMstTrans:        1, // Probably requires update
-  MaxSlvTrans:        1, // Probably requires update
+  MaxMstTrans:        4, // Probably requires update
+  MaxSlvTrans:        4, // Probably requires update
   FallThrough:        1'b0,
   PipelineStages:     1,
   LatencyMode:        axi_pkg::CUT_ALL_PORTS,
@@ -742,6 +744,7 @@ end
       .irq_i                ( irq[2*i+1:2*i]      ),
       .ipi_i                ( ipi[i]              ),
       .time_irq_i           ( timer_irq[i]        ),
+      .perf_evt_i           ( ccu_to_core_evt[i] ),
   `ifdef RVFI_PORT
       .rvfi_o               ( rvfi[i]             ),
   `endif
@@ -768,14 +771,15 @@ end
 
   localparam ace_pkg::ccu_cfg_t CCU_CFG = '{
     NoSlvPorts: culsans_pkg::NB_CORES,
-    MaxMstTrans: 2, // Probably requires update
-    MaxSlvTrans: 2, // Probably requires update
+    MaxMstTrans: 4, // Probably requires update
+    MaxSlvTrans: 4, // Probably requires update
     FallThrough: 1'b0,
-    LatencyMode: ace_pkg::CUT_ALL_PORTS,
+    LatencyMode: ace_pkg::CUT_SLV_PORTS,
     AxiIdWidthSlvPorts: culsans_pkg::IdWidth,
     AxiIdUsedSlvPorts: culsans_pkg::IdWidth,
     UniqueIds: 1'b1,
     DcacheLineWidth: ariane_pkg::DCACHE_LINE_WIDTH,
+    DCacheIndexWidth: ariane_pkg::DCACHE_INDEX_WIDTH,
     AxiAddrWidth: AxiAddrWidth,
     AxiUserWidth: AxiUserWidth,
     AxiDataWidth: AxiDataWidth
@@ -789,7 +793,8 @@ end
     .test_i      ( test_en    ),
     .slv_ports   ( core_to_CCU ),
     .snoop_ports ( CCU_to_core ),
-    .mst_ports   ( to_xbar[0]  )
+    .mst_ports   ( to_xbar[0]  ),
+    .perf_evt_o  ( ccu_to_core_evt )
   );
 
 
@@ -1002,8 +1007,8 @@ axi_riscv_atomics_wrap #(
     .AXI_USER_AS_ID     ( 1'b1                            ),
     .AXI_USER_ID_LSB    ( 0                               ),
     .AXI_USER_ID_MSB    ( $clog2(culsans_pkg::NB_CORES)-1 ),
-    .AXI_MAX_READ_TXNS  ( 1                               ),
-    .AXI_MAX_WRITE_TXNS ( 1                               ),
+    .AXI_MAX_READ_TXNS  ( 4                               ),
+    .AXI_MAX_WRITE_TXNS ( 4                               ),
     .RISCV_WORD_WIDTH   ( riscv::XLEN                     )
 ) i_axi_riscv_atomics (
     .clk_i  ( clk                       ),
@@ -1068,8 +1073,8 @@ localparam axi_addr_t L2CachedRegionLength = axi_addr_t'(culsans_pkg::DRAMLength
 `AXI_ASSIGN_TO_RESP(axi_mem_res, dram)
 
 axi_llc_reg_wrap #(
-   .SetAssociativity ( 32'd4              ),
-   .NumLines         ( 32'd512            ),
+   .SetAssociativity ( 32'd8              ),
+   .NumLines         ( 32'd256            ),
    .NumBlocks        ( 32'd8              ),
    .AxiIdWidth       ( AxiIdWidthSlaves   ),
    .AxiAddrWidth     ( AxiAddrWidth       ),
@@ -1946,7 +1951,7 @@ axi_clock_converter_0 pcie_axi_clock_converter (
   wire [4:0] miss_handler_0_state = gen_ariane[0].i_ariane.i_cva6.WB.i_cache_subsystem.i_nbdcache.i_miss_handler.state_q;
   wire [4:0] miss_handler_1_state = gen_ariane[1].i_ariane.i_cva6.WB.i_cache_subsystem.i_nbdcache.i_miss_handler.state_q;
 
-  wire [5:0] ccu_fsm_state = i_ccu.i_ccu_top.fsm.state_q;
+  wire [5:0] ccu_fsm_state = '0;
 
   xlnx_ila i_ila_top (
     .clk     (clk),

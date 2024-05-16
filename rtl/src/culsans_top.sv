@@ -84,6 +84,8 @@ module culsans_top #(
   dm::dmi_req_t  debug_req;
   dm::dmi_resp_t debug_resp;
 
+  logic [culsans_pkg::NB_CORES-1:0][7:0] ccu_to_core_evt;
+
   assign test_en = 1'b0;
 
   AXI_BUS #(
@@ -435,8 +437,8 @@ module culsans_top #(
     .AXI_USER_AS_ID     ( 1'b1                                    ),
     .AXI_USER_ID_LSB    ( 0                                       ),
     .AXI_USER_ID_MSB    ( $clog2(culsans_pkg::NB_CORES)-1         ),
-    .AXI_MAX_READ_TXNS  ( 1                                       ),
-    .AXI_MAX_WRITE_TXNS ( 1                                       ),
+    .AXI_MAX_READ_TXNS  ( 4                                       ),
+    .AXI_MAX_WRITE_TXNS ( 4                                       ),
     .RISCV_WORD_WIDTH   ( riscv::XLEN                             )
   ) i_axi_riscv_atomics (
     .clk_i,
@@ -667,14 +669,15 @@ module culsans_top #(
 
   localparam ace_pkg::ccu_cfg_t CCU_CFG = '{
     NoSlvPorts: culsans_pkg::NB_CORES,
-    MaxMstTrans: 2, // Probably requires update
-    MaxSlvTrans: 2, // Probably requires update
+    MaxMstTrans: 4, // Probably requires update
+    MaxSlvTrans: 4, // Probably requires update
     FallThrough: 1'b0,
-    LatencyMode: axi_pkg::CUT_ALL_PORTS,
+    LatencyMode: axi_pkg::CUT_SLV_PORTS,
     AxiIdWidthSlvPorts: culsans_pkg::IdWidth,
     AxiIdUsedSlvPorts: culsans_pkg::IdWidth,
     UniqueIds: 1'b1,
     DcacheLineWidth: ariane_pkg::DCACHE_LINE_WIDTH,
+    DCacheIndexWidth: ariane_pkg::DCACHE_INDEX_WIDTH,
     AxiAddrWidth: AXI_ADDRESS_WIDTH,
     AxiUserWidth: AXI_USER_WIDTH,
     AxiDataWidth: AXI_DATA_WIDTH
@@ -688,7 +691,8 @@ module culsans_top #(
     .test_i      ( test_en     ),
     .slv_ports   ( core_to_CCU ),
     .snoop_ports ( CCU_to_core ),
-    .mst_ports   ( to_xbar[0]  )
+    .mst_ports   ( to_xbar[0]  ),
+    .perf_evt_o  ( ccu_to_core_evt )
   );
 
   // ---------------
@@ -713,8 +717,8 @@ module culsans_top #(
   localparam axi_pkg::xbar_cfg_t AXI_XBAR_CFG = '{
     NoSlvPorts: culsans_pkg::NrSlaves,
     NoMstPorts: culsans_pkg::NB_PERIPHERALS,
-    MaxMstTrans: 1, // Probably requires update
-    MaxSlvTrans: 1, // Probably requires update
+    MaxMstTrans: 4, // Probably requires update
+    MaxSlvTrans: 4, // Probably requires update
     FallThrough: 1'b0,
     PipelineStages: 1,
     LatencyMode: axi_pkg::CUT_ALL_PORTS,
@@ -855,6 +859,7 @@ module culsans_top #(
       .irq_i                ( irqs[2*i+1:2*i]     ),
       .ipi_i                ( ipi[i]              ),
       .time_irq_i           ( timer_irq[i]        ),
+      .perf_evt_i           ( ccu_to_core_evt[i] ),
   `ifdef RVFI_PORT
       .rvfi_o               ( rvfi[i]             ),
   `endif
