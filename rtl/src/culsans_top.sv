@@ -672,7 +672,7 @@ module culsans_top #(
     MaxMstTrans: 4, // Probably requires update
     MaxSlvTrans: 4, // Probably requires update
     FallThrough: 1'b0,
-    LatencyMode: axi_pkg::CUT_SLV_PORTS,
+    LatencyMode: axi_pkg::NO_LATENCY,
     AxiIdWidthSlvPorts: culsans_pkg::IdWidth,
     AxiIdUsedSlvPorts: culsans_pkg::IdWidth,
     UniqueIds: 1'b1,
